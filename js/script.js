@@ -85,7 +85,7 @@ function clicked(event) {
   env.play(triOsc);
   triOsc.freq(freq + vibrato.value);
   createLight(clickX, clickY);
-  console.log(polySynth);
+  // console.log(polySynth);
 }
 
 function createLight(x, y) {
