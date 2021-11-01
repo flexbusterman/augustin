@@ -24,7 +24,7 @@ let vibrato = {
   amp: 2,
   direction: "up",
 };
-let freq = 1;
+let bassFreq = 1;
 // let clock = new THREE.Clock();
 
 window.addEventListener("resize", onWindowResize, false);
@@ -61,7 +61,7 @@ setInterval(function () {
 setInterval(function () {
   if ([1, 2, 3, 4 ].choose() == 1) {
     // console.log(Math.random());
-    polySynth.output.gain.value = Math.random()
+    polySynth.output.gainTarget = Math.random();
   }
 }, 50);
 
@@ -80,10 +80,10 @@ function clicked(event) {
     ((event.clientY - window.innerHeight / 2) / window.innerHeight) * 2;
   triOsc.start();
   let octave = [2, 3, 4].choose();
-  freq = notes[degrees.choose()][octave];
+  bassFreq = notes[degrees.choose()][octave];
   env.setExp(true);
   env.play(triOsc);
-  triOsc.freq(freq + vibrato.value);
+  triOsc.freq(bassFreq + vibrato.value);
   createLight(clickX, clickY);
   // console.log(polySynth);
 }
@@ -146,7 +146,10 @@ const animate = function () {
       : (vibrato.direction = "up");
   }
 
-  triOsc.freq(freq + vibrato.value);
+  polySynth.output.gain.value > polySynth.output.gainTarget
+    ? (polySynth.output.gain.value -= 0.01)
+    : (polySynth.output.gain.value += 0.01);
+  triOsc.freq(bassFreq + vibrato.value);
 };
 animate();
 
