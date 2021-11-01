@@ -1,21 +1,15 @@
 Array.prototype.choose = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
+String.prototype.coin = function () {
+  return parseFloat(this) > Math.random();
+};
 
-const notes = [
-  [16.35, 32.7, 65.41, 130.81, 261.63, 523.25, 1046.5, 2093.0, 4186.01],
-  [17.32, 34.65, 69.3, 138.59, 277.18, 554.37, 1108.73, 2217.46, 4434.92],
-  [18.35, 36.71, 73.42, 146.83, 293.66, 587.33, 1174.66, 2349.32, 4698.64],
-  [19.45, 38.89, 77.78, 155.56, 311.13, 622.25, 1244.51, 2489.02, 4978.03],
-  [20.6, 41.2, 82.41, 164.81, 329.63, 659.26, 1318.51, 2637.02],
-  [21.83, 43.65, 87.31, 174.61, 349.23, 698.46, 1396.91, 2793.83],
-  [23.12, 46.25, 92.5, 185.0, 369.99, 739.99, 1479.98, 2959.96],
-  [24.5, 49.0, 98.0, 196.0, 392.0, 783.99, 1567.98, 3135.96],
-  [25.96, 51.91, 103.83, 207.65, 415.3, 830.61, 1661.22, 3322.44],
-  [27.5, 55.0, 110.0, 220.0, 440.0, 880.0, 1760.0, 3520.0],
-  [29.14, 58.27, 116.54, 233.08, 466.16, 932.33, 1864.66, 3729.31],
-  [30.87, 61.74, 123.47, 246.94, 493.88, 987.77, 1975.53, 3951.07],
-];
+function freq(noteNumber) {
+  return Math.pow(2, (noteNumber - 69) / 12) * 440;
+}
+
+let root = 60 % 12;
 const degrees = [0, 2, 3, 5, 7, 9, 10];
 const debug = false;
 let pointLights = [];
@@ -25,10 +19,39 @@ let vibrato = {
   direction: "up",
 };
 let bassFreq = 1;
+let noteCount = 0;
+
+let sequence = {
+  notes: [
+    // degreeindex, adding (i.e. octave)
+    [0, 12],
+    [6, 0],
+    [5, 0],
+    [3, 0],
+    [1, 0],
+    [4, 0],
+    [0, 12],
+    [3, 12],
+    [4, 12],
+    [4, 12],
+    [6, 12],
+    [0, 24],
+  ],
+  count: 100,
+  next: function () {
+    // this.count >= this.notes.length ? (this.count = 1) : this.count++;
+    // return this.notes[this.count - 1]
+    this.count++;
+    return (
+      degrees[this.notes[this.count - 1][0]] + this.notes[this.count - 1][1]
+    );
+  },
+};
 // let clock = new THREE.Clock();
 
 window.addEventListener("resize", onWindowResize, false);
 document.body.addEventListener("click", clicked, true);
+document.body.requestFullscreen();
 // attackTime attackLevel decayTime decayLevel releaseTime releaseLevel
 let env = new p5.Envelope(0.005, 0.2, 0.1, 0.2, 4.0, 0);
 let triOsc = new p5.Oscillator("triangle");
@@ -44,10 +67,26 @@ function playChord() {
   let dur = 5;
   let time = 0;
   let vel = 0.005;
-  polySynth.play(notes[degrees.choose()][[3]], vel, 0, dur);
-  polySynth.play(notes[degrees.choose()][[3, 4].choose()], vel, 0, dur);
-  polySynth.play(notes[degrees.choose()][[4, 5].choose()], vel, 0, dur);
+  polySynth.play(
+    freq(degrees.choose() + root + [4].choose() * 12),
+    vel,
+    0,
+    dur
+  );
+  polySynth.play(
+    freq(degrees.choose() + root + [4, 5].choose() * 12),
+    vel * 0.8,
+    0,
+    dur
+  );
+  polySynth.play(
+    freq(degrees.choose() + root + [5, 6].choose() * 12),
+    vel * 0.75,
+    0,
+    dur
+  );
 }
+
 setInterval(function () {
   playChord();
 }, 5000);
@@ -59,8 +98,7 @@ setInterval(function () {
 // }, 100);
 
 setInterval(function () {
-  if ([1, 2, 3, 4 ].choose() == 1) {
-    // console.log(Math.random());
+  if ("0.25".coin()) {
     polySynth.output.gainTarget = Math.random();
   }
 }, 50);
@@ -78,18 +116,29 @@ function clicked(event) {
     ((event.clientX - window.innerWidth / 2) / window.innerWidth) * 2;
   let clickY =
     ((event.clientY - window.innerHeight / 2) / window.innerHeight) * 2;
+
   triOsc.start();
-  let octave = [2, 3, 4].choose();
-  bassFreq = notes[degrees.choose()][octave];
+
+  if (sequence.count < sequence.notes.length) {
+    bassFreq = freq(sequence.next() + 36);
+  } else {
+    bassFreq = freq((root % 12) + [36, 48].choose() + degrees.choose());
+    // chance to initialize bass sequence
+    if ("0.1".coin()) {
+      sequence.count = 0;
+    }
+  }
+  // console.log(bassFreq);
+  // bassFreq = freq(sequence.next() + root + octave);
   env.setExp(true);
+  let bassAmp = Math.log(500 / bassFreq) / 30 + 0.05;
+  env.set(0.005, bassAmp, 0.1, bassAmp, 4.0, 0);
   env.play(triOsc);
   triOsc.freq(bassFreq + vibrato.value);
   createLight(clickX, clickY);
-  // console.log(polySynth);
 }
 
 function createLight(x, y) {
-  // console.log(x,y)
   // PointLight( color : Integer, intensity : Float, distance : Number, decay : Float )
   let light = new THREE.PointLight(0xffffff, 2.0, 2, 1.0);
   pointLights.push(light);

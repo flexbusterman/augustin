@@ -7,14 +7,44 @@
       body {
         margin: 0;
       }
+      .logo {
+        position: absolute;
+        right: 8px;
+        bottom: 10px;
+        width: 5vh;
+        height: 5vh;
+        cursor: pointer;
+      }
+      .logo object {
+        width: 5vh;
+        height: 5vh;
+        pointer-events: none;
+      }
+      .noselect {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+      }
     </style>
   </head>
-  <body>
+  <body class="noselect">
     <script src="js/three.js"></script>
     <script src="js/p5.min.js"></script>
     <script src="js/p5.sound.min.js"></script>
     <script src="js/ConvexGeometry.js"></script>
     <script src="js/dat.gui.min.js"></script>
     <script src="js/script.js"></script>
+    <a
+      href="https://open.spotify.com/artist/2BKnkg09wkSvzUyDbZ9lf9?si=c5a_7MSUS9qe4WCnzTPzeQ"
+      class="logo"
+    >
+      <object data="./assets/spotify.svg" type="image/svg+xml">
+        <span>SPOTIFY</span>
+      </object>
+    </a>
   </body>
 </html>
