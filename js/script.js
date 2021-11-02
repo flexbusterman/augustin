@@ -51,7 +51,7 @@ let sequence = {
 
 window.addEventListener("resize", onWindowResize, false);
 document.body.addEventListener("click", clicked, true);
-document.body.requestFullscreen();
+// document.body.requestFullscreen();
 // attackTime attackLevel decayTime decayLevel releaseTime releaseLevel
 let env = new p5.Envelope(0.005, 0.2, 0.1, 0.2, 4.0, 0);
 let triOsc = new p5.Oscillator("triangle");
@@ -121,8 +121,10 @@ function clicked(event) {
 
   if (sequence.count < sequence.notes.length) {
     bassFreq = freq(sequence.next() + 36);
+    ambient.intensity = 0.015;
   } else {
     bassFreq = freq((root % 12) + [36, 48].choose() + degrees.choose());
+    ambient.intensity = 0;
     // chance to initialize bass sequence
     if ("0.1".coin()) {
       sequence.count = 0;
@@ -159,29 +161,28 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
-const cube = new THREE.Mesh(geometry, material);
-// const ambientLight = new THREE.AmbientLight(0x040404); // soft white light
-// const pointLight = new THREE.PointLight(0xffffff, 2, 50);
-// pointLight.position.set(10, 10, 10);
-// scene.add(ambientLight);
-// const pointLightHelper = new THREE.PointLightHelper(pointLight, 1);
-// scene.add(pointLightHelper);
-scene.add(cube);
+const material = new THREE.MeshStandardMaterial({
+  color: 0xffffff,
+  roughness: 1.0,
+  wireframe: false,
+});
 
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+const ambient = new THREE.AmbientLight(0xffffff, 0.0); // soft white light
+scene.add(ambient);
 camera.position.z = 3;
 
 const animate = function () {
   requestAnimationFrame(animate);
-  cube.rotation.x += 0.002;
-  cube.rotation.y += 0.003;
+  cube.rotation.x -= 0.003;
+  cube.rotation.y += 0.002;
   renderer.render(scene, camera);
   pointLights.forEach(function (item, index, object) {
-    item.intensity = item.intensity * 0.98 - 0.005;
+    item.intensity = item.intensity * 0.99 - 0.002;
     if (item.intensity <= 0.001) {
       scene.remove(item);
       object.splice(index, 1);
-      // console.log("popped " + index)
     }
   });
 
