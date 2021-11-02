@@ -11,7 +11,6 @@ function freq(noteNumber) {
 
 let root = 60 % 12;
 const degrees = [0, 2, 3, 5, 7, 9, 10];
-const debug = false;
 let pointLights = [];
 let vibrato = {
   value: 0,
@@ -39,8 +38,6 @@ let sequence = {
   ],
   count: 100,
   next: function () {
-    // this.count >= this.notes.length ? (this.count = 1) : this.count++;
-    // return this.notes[this.count - 1]
     this.count++;
     return (
       degrees[this.notes[this.count - 1][0]] + this.notes[this.count - 1][1]
@@ -51,7 +48,6 @@ let sequence = {
 
 window.addEventListener("resize", onWindowResize, false);
 document.body.addEventListener("click", clicked, true);
-// document.body.requestFullscreen();
 // attackTime attackLevel decayTime decayLevel releaseTime releaseLevel
 let env = new p5.Envelope(0.005, 0.2, 0.1, 0.2, 4.0, 0);
 let triOsc = new p5.Oscillator("triangle");
@@ -91,12 +87,6 @@ setInterval(function () {
   playChord();
 }, 5000);
 
-// setInterval(function () {
-// if([1,2,3].choose() == 1){
-// polySynth.noteAttack()
-// }
-// }, 100);
-
 setInterval(function () {
   if ("0.25".coin()) {
     polySynth.output.gainTarget = Math.random();
@@ -130,8 +120,6 @@ function clicked(event) {
       sequence.count = 0;
     }
   }
-  // console.log(bassFreq);
-  // bassFreq = freq(sequence.next() + root + octave);
   env.setExp(true);
   let bassAmp = Math.log(500 / bassFreq) / 30 + 0.05;
   env.set(0.005, bassAmp, 0.1, bassAmp, 4.0, 0);
@@ -202,11 +190,3 @@ const animate = function () {
   triOsc.freq(bassFreq + vibrato.value);
 };
 animate();
-
-// Debug
-if (debug == true) {
-  const gui = new dat.GUI();
-  gui.add(pointLight.position, "x", -5, 5, 0.1);
-  gui.add(pointLight.position, "y", -5, 5, 0.1);
-  gui.add(pointLight.position, "z", -5, 5, 0.1);
-}
