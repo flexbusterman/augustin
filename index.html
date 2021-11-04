@@ -49,8 +49,27 @@
     <script src="js/p5.sound.min.js"></script>
     <script src="js/ConvexGeometry.js"></script>
     <script src="js/dat.gui.min.js"></script>
-    <script src="js/script.js"></script>
-
+    <script src="js/functions.js"></script>
+    <script>
+      function loadScript(path) {
+        var script = document.createElement("script");
+        script.src = path;
+        script.type = "text/javascript";
+        // changed "target" to "head"
+        var head = document.getElementsByTagName("head")[0];
+        head.appendChild(script);
+      }
+      let path = window.location.href.split("?")[0];
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      const params = Object.fromEntries(urlSearchParams.entries());
+      if (Object.keys(params).length === 0) {
+        // loads this script on start
+        loadScript("js/02.js");
+      } else {
+        loadScript("js/" + params.n + ".js");
+      }
+    </script>
+    <!-- TODO: add number links bottom left that updates query and reloads site -->
     <a
       href="https://open.spotify.com/artist/2BKnkg09wkSvzUyDbZ9lf9?si=c5a_7MSUS9qe4WCnzTPzeQ"
       class="logo spotify"

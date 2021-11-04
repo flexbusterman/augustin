@@ -1,14 +1,3 @@
-Array.prototype.choose = function () {
-  return this[Math.floor(Math.random() * this.length)];
-};
-String.prototype.coin = function () {
-  return parseFloat(this) > Math.random();
-};
-
-function freq(noteNumber) {
-  return Math.pow(2, (noteNumber - 69) / 12) * 440;
-}
-
 let root = 60 % 12;
 const degrees = [0, 2, 3, 5, 7, 9, 10];
 let pointLights = [];
@@ -46,7 +35,6 @@ let sequence = {
 };
 // let clock = new THREE.Clock();
 
-window.addEventListener("resize", onWindowResize, false);
 document.body.addEventListener("click", clicked, true);
 // attackTime attackLevel decayTime decayLevel releaseTime releaseLevel
 let env = new p5.Envelope(0.005, 0.2, 0.1, 0.2, 4.0, 0);
@@ -94,12 +82,6 @@ setInterval(function () {
 }, 50);
 
 playChord();
-
-function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-}
 
 function clicked(event) {
   let clickX =
