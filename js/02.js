@@ -9,6 +9,8 @@ function clicked(event) {
   // plane.position.set(0,0,0)
   // plane.rotation
   // console.log(directionalLight);
+  // mesh.geometry.attributes.position.array[2] = (Math.random() * 2 - 1.0)
+  // console.log(mesh.geometry.attributes.position.array[2])
 }
 
 const scene = new THREE.Scene();
@@ -76,47 +78,78 @@ plane.rotation.x = -Math.PI / 2;
 plane.position.y = -0.5;
 scene.add(plane);
 
-gui.add(plane.position, "x", -1.0, 1.0);
-gui.add(plane.position, "y", -1.0, 1.0);
-gui.add(plane.position, "z", -1.0, 1.0);
+gui.add(plane.position, "x", -5.0, 5.0, 0.1);
+gui.add(plane.position, "y", -5.0, 5.0, 0.1);
+gui.add(plane.position, "z", -5.0, 5.0, 0.1);
 
-// const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-// plane.rotation.set(-Math.PI * 0.5, 0, 0);
-// plane.position.set(0, -0.5, 0);
-// plane.scale.set(10, 10, 1);
-// scene.add(plane);
+// const geometry = new THREE.BufferGeometry();
+// // create a simple square shape. We duplicate the top left and bottom right
+// // vertices because each vertex needs to appear once per triangle.
+// const vertices = new Float32Array( [
+	// -1.0, -1.0,  1.0,
+	 // 1.0, -1.0,  1.0,
+	 // 1.0,  1.0,  1.0,
 
-// PointLight( color : Integer, intensity : Float, distance : Number, decay : Float )
-// const pointlight = new THREE.PointLight(0xffffff, 2.0, 2, 1.0);
-// pointlight.position.set(1,0.5,1)
-// scene.add(pointlight);
+	 // 1.0,  1.0,  1.0,
+	// -1.0,  1.0,  1.0,
+	// -1.0, -1.0,  1.0
+// ] );
+
+// // itemSize = 3 because there are 3 values (components) per vertex
+// geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+// const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+// const mesh = new THREE.Mesh( geometry, material );
+
+// const points = []
+// points.push(new THREE.Vector3(-5, 0, 0))
+// points.push(new THREE.Vector3(5, 0, 0))
+// let geometry = new THREE.BufferGeometry().setFromPoints( points )
+// let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x888888 }))
+// scene.add(line)
+
+// buffergeometry test 1
+// const material = new THREE.MeshNormalMaterial()
+// let geometry = new THREE.BufferGeometry()
+// const points = [
+    // new THREE.Vector3(-1, 1, -1),//c
+    // new THREE.Vector3(-1, -1, 1),//b
+    // new THREE.Vector3(1, 1, 1),//a   
+
+    // new THREE.Vector3(1, 1, 1),//a    
+    // new THREE.Vector3(1, -1, -1),//d  
+    // new THREE.Vector3(-1, 1, -1),//c
+
+    // new THREE.Vector3(-1, -1, 1),//b
+    // new THREE.Vector3(1, -1, -1),//d  
+    // new THREE.Vector3(1, 1, 1),//a
+
+    // new THREE.Vector3(-1, 1, -1),//c
+    // new THREE.Vector3(1, -1, -1),//d    
+    // new THREE.Vector3(-1, -1, 1),//b
+// ]
+
+// geometry.setFromPoints(points)
+// geometry.computeVertexNormals()
+
+// const mesh = new THREE.Mesh(geometry, material)
+// scene.add(mesh)
+// mesh.geometry.attributes.position.needsUpdate = true;
+
+// gui.add(mesh.position, "x", -2.0, 2.0, 0.1);
+// gui.add(mesh.position, "y", -2.0, 2.0, 0.1);
+// gui.add(mesh.position, "z", -2.0, 2.0, 0.1);
+
+// TODO: read
+//https://threejs.org/docs/#manual/en/introduction/How-to-update-things
 
 const monolithGeometry = new THREE.BoxGeometry(0.5, 1, 0.2);
-const monolithMaterial = new THREE.MeshStandardMaterial({
-  color: 0xffffff,
-  roughness: 1.0,
-  wireframe: false,
-});
+const monolithMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1.0, wireframe: false, });
 const monolith = new THREE.Mesh(monolithGeometry, monolithMaterial);
-// gui.add(monolith.position, 'x', -1.0, 1.0)
-// gui.add(monolith.position, 'y', -1.0, 1.0)
-// gui.add(monolith.position, 'z', -1.0, 1.0)
 scene.add(monolith);
+monolith.position.x = 2
 monolith.castShadow = true;
 
-// const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-// scene.add(directionalLight);
-// directionalLight.castShadow = true;
-// directionalLight.position.set(0.7, 0.5, 1.0);
-// gui.add(directionalLight.position, "x", -1.0, 1.0, 0.1);
-// gui.add(directionalLight.position, "y", -1.0, 1.0, 0.1);
-// gui.add(directionalLight.position, "z", -1.0, 1.0, 0.1);
-// gui.add(directionalLight.rotation, 'x', -1.0, 1.0)
-// gui.add(directionalLight.rotation, 'y', -1.0, 1.0)
-// gui.add(directionalLight.rotation, 'z', -1.0, 1.0)
-// directionalLight.target = monolith;
-
-const ambient = new THREE.AmbientLight(0xffffff, 0.01); // soft white light
+const ambient = new THREE.AmbientLight(0xffffff, 0.03); // soft white light
 scene.add(ambient);
 
 camera.position.z = 3;
