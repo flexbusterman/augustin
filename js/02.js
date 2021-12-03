@@ -6,11 +6,21 @@ function clicked(event) {
     ((event.clientX - window.innerWidth / 2) / window.innerWidth) * 2;
   let clickY =
     ((event.clientY - window.innerHeight / 2) / window.innerHeight) * 2;
-  // plane.position.set(0,0,0)
-  // plane.rotation
-  // console.log(directionalLight);
-  // mesh.geometry.attributes.position.array[2] = (Math.random() * 2 - 1.0)
-  // console.log(mesh.geometry.attributes.position.array[2])
+  for (i=0;i<meshObject.position.array.length;i++){
+    console.log(meshObject.position.array[i])
+        // positions[i].tl = new TimelineMax();
+    //
+
+				// positions[i].tl.to(positions[i].object.scale, 1, {x: 2, ease: Expo.easeOut})
+				// positions[i].tl.to(positions[i].object.scale, .5, {x: .5, ease: Expo.easeOut})
+				// positions[i].tl.to(positions[i].object.position, .5, {x: 2, ease: Expo.easeOut})
+				// positions[i].tl.to(positions[i].object.rotation, .5, {y: Math.PI*.5, ease: Expo.easeOut}, "=-1.5")
+        // positions[i].tl.to(positions[i].object.scale, 1, {x: 2, ease: Expo.easeOut})
+        // positions[i].tl.to(positions[i].object.scale, .5, {x: .5, ease: Expo.easeOut})
+        // positions[i].tl.to(positions[i].object.position, .5, {x: 2, ease: Expo.easeOut})
+        // positions[i].tl.to(positions[i].object.rotation, .5, {y: Math.PI*.5, ease: Expo.easeOut}, "=-1.5")
+    // mesh.geometry.attributes.position.needsUpdate = true; // required after the first render
+  }
 }
 
 const scene = new THREE.Scene();
@@ -42,8 +52,6 @@ light.castShadow = true;
 light.shadow.bias = -0.001;
 light.shadow.mapSize.width = 2048;
 light.shadow.mapSize.height = 2048;
-light.shadow.camera.near = 0.1;
-light.shadow.camera.far = 500.0;
 light.shadow.camera.near = 0.5;
 light.shadow.camera.far = 500.0;
 light.shadow.camera.left = 100;
@@ -56,32 +64,23 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement);
 // controls.target.set(0, 20, 0);
 controls.update();
 
-// const planeGeometry = new THREE.PlaneGeometry(width : Float, height : Float, widthSegments : Integer, heightSegments : Integer)
-// width — Width along the X axis. Default is 1.  height — Height along the Y axis. Default is 1.  widthSegments — Optional. Default is 1.  heightSegments — Optional. Default is 1.
+// const plane = new THREE.Mesh(
+  // new THREE.PlaneGeometry(100, 100, 10, 10),
+  // new THREE.MeshStandardMaterial({
+    // color: 0xffffff,
+  // })
+// );
+// plane.castShadow = false;
+// plane.receiveShadow = true;
+// plane.rotation.x = -Math.PI / 2;
+// plane.position.y = -0.5;
+// scene.add(plane);
 
-// const planeGeometry = new THREE.PlaneGeometry();
-// const planeMaterial = new THREE.MeshStandardMaterial({
-// color: 0xffffff,
-// roughness: 1.0,
-// wireframe: false,
-// });
+// gui.add(plane.position, "x", -5.0, 5.0, 0.1);
+// gui.add(plane.position, "y", -5.0, 5.0, 0.1);
+// gui.add(plane.position, "z", -5.0, 5.0, 0.1);
 
-const plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(100, 100, 10, 10),
-  new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-  })
-);
-plane.castShadow = false;
-plane.receiveShadow = true;
-plane.rotation.x = -Math.PI / 2;
-plane.position.y = -0.5;
-scene.add(plane);
-
-gui.add(plane.position, "x", -5.0, 5.0, 0.1);
-gui.add(plane.position, "y", -5.0, 5.0, 0.1);
-gui.add(plane.position, "z", -5.0, 5.0, 0.1);
-
+// buffergeometry test 1
 // const geometry = new THREE.BufferGeometry();
 // // create a simple square shape. We duplicate the top left and bottom right
 // // vertices because each vertex needs to appear once per triangle.
@@ -107,52 +106,84 @@ gui.add(plane.position, "z", -5.0, 5.0, 0.1);
 // let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x888888 }))
 // scene.add(line)
 
-// buffergeometry test 1
+// buffergeometry test 2
 // const material = new THREE.MeshNormalMaterial()
-// let geometry = new THREE.BufferGeometry()
-// const points = [
-    // new THREE.Vector3(-1, 1, -1),//c
-    // new THREE.Vector3(-1, -1, 1),//b
-    // new THREE.Vector3(1, 1, 1),//a   
+const material = new THREE.MeshNormalMaterial( {side: THREE.DoubleSide} );
+let geometry = new THREE.BufferGeometry()
 
-    // new THREE.Vector3(1, 1, 1),//a    
-    // new THREE.Vector3(1, -1, -1),//d  
-    // new THREE.Vector3(-1, 1, -1),//c
+// pyramid
+let points = [
+    new THREE.Vector3(-1, 1, -1),//c
+    new THREE.Vector3(-1, -1, 1),//b
+    new THREE.Vector3(1, 1, 1),//a   
 
-    // new THREE.Vector3(-1, -1, 1),//b
-    // new THREE.Vector3(1, -1, -1),//d  
-    // new THREE.Vector3(1, 1, 1),//a
+    new THREE.Vector3(1, 1, 1),//a    
+    new THREE.Vector3(1, -1, -1),//d  
+    new THREE.Vector3(-1, 1, -1),//c
 
-    // new THREE.Vector3(-1, 1, -1),//c
-    // new THREE.Vector3(1, -1, -1),//d    
-    // new THREE.Vector3(-1, -1, 1),//b
-// ]
+    new THREE.Vector3(-1, -1, 1),//b
+    new THREE.Vector3(1, -1, -1),//d  
+    new THREE.Vector3(1, 1, 1),//a
 
-// geometry.setFromPoints(points)
-// geometry.computeVertexNormals()
+    new THREE.Vector3(-1, 1, -1),//c
+    new THREE.Vector3(1, -1, -1),//d    
+    new THREE.Vector3(-1, -1, 1),//b
+]
+//
+//
+const vertices = new Float32Array( [
+	-1.0, -1.0,  1.0,
+	 1.0, -1.0,  1.0,
+	 1.0,  1.0,  1.0,
 
-// const mesh = new THREE.Mesh(geometry, material)
-// scene.add(mesh)
+	 1.0,  1.0,  1.0,
+	-1.0,  1.0,  1.0,
+	-1.0, -1.0,  1.0
+] );
+
+// geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+
+geometry.setFromPoints(points)
+geometry.computeVertexNormals()
+
+const mesh = new THREE.Mesh(geometry, material)
+scene.add(mesh)
 // mesh.geometry.attributes.position.needsUpdate = true;
 
-// gui.add(mesh.position, "x", -2.0, 2.0, 0.1);
-// gui.add(mesh.position, "y", -2.0, 2.0, 0.1);
-// gui.add(mesh.position, "z", -2.0, 2.0, 0.1);
+const meshObjectOriginal = mesh.geometry.attributes;
+const meshObject = mesh.geometry.attributes;
+
+// let x, y, z, index;
+// x = y = z = index = 0;
+
+// for ( let i = 0, l = MAX_POINTS; i < l; i ++ ) {
+
+    // positions[ index ++ ] = x;
+    // positions[ index ++ ] = y;
+    // positions[ index ++ ] = z;
+
+    // x += ( Math.random() - 0.5 ) * 30;
+    // y += ( Math.random() - 0.5 ) * 30;
+    // z += ( Math.random() - 0.5 ) * 30;
+
+// }
+
+
 
 // TODO: read
 //https://threejs.org/docs/#manual/en/introduction/How-to-update-things
 
-const monolithGeometry = new THREE.BoxGeometry(0.5, 1, 0.2);
-const monolithMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1.0, wireframe: false, });
-const monolith = new THREE.Mesh(monolithGeometry, monolithMaterial);
-scene.add(monolith);
-monolith.position.x = 2
-monolith.castShadow = true;
+// const monolithGeometry = new THREE.BoxGeometry(0.5, 1, 0.2);
+// const monolithMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1.0, wireframe: false, });
+// const monolith = new THREE.Mesh(monolithGeometry, monolithMaterial);
+// scene.add(monolith);
+// monolith.position.x = 2
+// monolith.castShadow = true;
 
 const ambient = new THREE.AmbientLight(0xffffff, 0.03); // soft white light
 scene.add(ambient);
 
-camera.position.z = 3;
+camera.position.z = 5;
 
 const animate = function () {
   requestAnimationFrame(animate);
