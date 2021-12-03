@@ -6,21 +6,11 @@ function clicked(event) {
     ((event.clientX - window.innerWidth / 2) / window.innerWidth) * 2;
   let clickY =
     ((event.clientY - window.innerHeight / 2) / window.innerHeight) * 2;
-  for (i=0;i<meshObject.position.array.length;i++){
-    console.log(meshObject.position.array[i])
-        // positions[i].tl = new TimelineMax();
-    //
-
-				// positions[i].tl.to(positions[i].object.scale, 1, {x: 2, ease: Expo.easeOut})
-				// positions[i].tl.to(positions[i].object.scale, .5, {x: .5, ease: Expo.easeOut})
-				// positions[i].tl.to(positions[i].object.position, .5, {x: 2, ease: Expo.easeOut})
-				// positions[i].tl.to(positions[i].object.rotation, .5, {y: Math.PI*.5, ease: Expo.easeOut}, "=-1.5")
-        // positions[i].tl.to(positions[i].object.scale, 1, {x: 2, ease: Expo.easeOut})
-        // positions[i].tl.to(positions[i].object.scale, .5, {x: .5, ease: Expo.easeOut})
-        // positions[i].tl.to(positions[i].object.position, .5, {x: 2, ease: Expo.easeOut})
-        // positions[i].tl.to(positions[i].object.rotation, .5, {y: Math.PI*.5, ease: Expo.easeOut}, "=-1.5")
-    // mesh.geometry.attributes.position.needsUpdate = true; // required after the first render
-  }
+  targets = originalPositions.map((item,i)=> {
+    return item += Math.random() - 0.5 * 2
+  })
+  // timeline.to(meshObject.position.array, 1, { 0: targets[0], ease: Expo.easeOut });
+  timeline.to(meshObject.position.array, 1, { 0: targets[0] });
 }
 
 const scene = new THREE.Scene();
@@ -41,7 +31,7 @@ renderer.shadowMap.enabled = true;
 // THREE.PCFSoftShadowMap
 // THREE.VSMShadowMap
 // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.shadowMap.type = THREE.PCFShadowMap
+renderer.shadowMap.type = THREE.PCFShadowMap;
 
 document.body.appendChild(renderer.domElement);
 
@@ -65,10 +55,10 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.update();
 
 // const plane = new THREE.Mesh(
-  // new THREE.PlaneGeometry(100, 100, 10, 10),
-  // new THREE.MeshStandardMaterial({
-    // color: 0xffffff,
-  // })
+// new THREE.PlaneGeometry(100, 100, 10, 10),
+// new THREE.MeshStandardMaterial({
+// color: 0xffffff,
+// })
 // );
 // plane.castShadow = false;
 // plane.receiveShadow = true;
@@ -85,13 +75,13 @@ controls.update();
 // // create a simple square shape. We duplicate the top left and bottom right
 // // vertices because each vertex needs to appear once per triangle.
 // const vertices = new Float32Array( [
-	// -1.0, -1.0,  1.0,
-	 // 1.0, -1.0,  1.0,
-	 // 1.0,  1.0,  1.0,
+// -1.0, -1.0,  1.0,
+// 1.0, -1.0,  1.0,
+// 1.0,  1.0,  1.0,
 
-	 // 1.0,  1.0,  1.0,
-	// -1.0,  1.0,  1.0,
-	// -1.0, -1.0,  1.0
+// 1.0,  1.0,  1.0,
+// -1.0,  1.0,  1.0,
+// -1.0, -1.0,  1.0
 // ] );
 
 // // itemSize = 3 because there are 3 values (components) per vertex
@@ -108,67 +98,76 @@ controls.update();
 
 // buffergeometry test 2
 // const material = new THREE.MeshNormalMaterial()
-const material = new THREE.MeshNormalMaterial( {side: THREE.DoubleSide} );
-let geometry = new THREE.BufferGeometry()
+const material = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
+let geometry = new THREE.BufferGeometry();
 
 // pyramid
+let vectors = {
+  a: new THREE.Vector3(1.0, 1.0, 1.0),
+  b: new THREE.Vector3(-1.0, -1.0, 1.0),
+  c: new THREE.Vector3(-1.0, 1.0, -1.0),
+  d: new THREE.Vector3(1.0, -1.0, -1.0),
+};
+
 let points = [
-    new THREE.Vector3(-1, 1, -1),//c
-    new THREE.Vector3(-1, -1, 1),//b
-    new THREE.Vector3(1, 1, 1),//a   
+  // new THREE.Vector3(-1, 1, -1), //c
+  // new THREE.Vector3(-1, -1, 1), //b
+  // new THREE.Vector3(1, 1, 1), //a
+  vectors.c,
+  vectors.b,
+  vectors.a,
 
-    new THREE.Vector3(1, 1, 1),//a    
-    new THREE.Vector3(1, -1, -1),//d  
-    new THREE.Vector3(-1, 1, -1),//c
+  // new THREE.Vector3(1, 1, 1), //a
+  // new THREE.Vector3(1, -1, -1), //d
+  // new THREE.Vector3(-1, 1, -1), //c
+  vectors.a,
+  vectors.d,
+  vectors.c,
 
-    new THREE.Vector3(-1, -1, 1),//b
-    new THREE.Vector3(1, -1, -1),//d  
-    new THREE.Vector3(1, 1, 1),//a
+  // new THREE.Vector3(-1, -1, 1), //b
+  // new THREE.Vector3(1, -1, -1), //d
+  // new THREE.Vector3(1, 1, 1), //a
+  vectors.b,
+  vectors.d,
+  vectors.a,
 
-    new THREE.Vector3(-1, 1, -1),//c
-    new THREE.Vector3(1, -1, -1),//d    
-    new THREE.Vector3(-1, -1, 1),//b
-]
+  // new THREE.Vector3(-1, 1, -1), //c
+  // new THREE.Vector3(1, -1, -1), //d
+  // new THREE.Vector3(-1, -1, 1), //b
+  vectors.c,
+  vectors.b,
+  vectors.d,
+];
 //
 //
-const vertices = new Float32Array( [
-	-1.0, -1.0,  1.0,
-	 1.0, -1.0,  1.0,
-	 1.0,  1.0,  1.0,
-
-	 1.0,  1.0,  1.0,
-	-1.0,  1.0,  1.0,
-	-1.0, -1.0,  1.0
-] );
-
 // geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
 
-geometry.setFromPoints(points)
-geometry.computeVertexNormals()
+geometry.setFromPoints(points);
+geometry.computeVertexNormals();
 
-const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
 // mesh.geometry.attributes.position.needsUpdate = true;
 
-const meshObjectOriginal = mesh.geometry.attributes;
 const meshObject = mesh.geometry.attributes;
+const originalPositions = meshObject.position.array.slice()
+let targets = originalPositions
+
 
 // let x, y, z, index;
 // x = y = z = index = 0;
 
 // for ( let i = 0, l = MAX_POINTS; i < l; i ++ ) {
 
-    // positions[ index ++ ] = x;
-    // positions[ index ++ ] = y;
-    // positions[ index ++ ] = z;
+// positions[ index ++ ] = x;
+// positions[ index ++ ] = y;
+// positions[ index ++ ] = z;
 
-    // x += ( Math.random() - 0.5 ) * 30;
-    // y += ( Math.random() - 0.5 ) * 30;
-    // z += ( Math.random() - 0.5 ) * 30;
+// x += ( Math.random() - 0.5 ) * 30;
+// y += ( Math.random() - 0.5 ) * 30;
+// z += ( Math.random() - 0.5 ) * 30;
 
 // }
-
-
 
 // TODO: read
 //https://threejs.org/docs/#manual/en/introduction/How-to-update-things
@@ -185,8 +184,15 @@ scene.add(ambient);
 
 camera.position.z = 5;
 
+let timeline = new TimelineMax();
+
 const animate = function () {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
+  // for(i=0;i<meshObject.position.array.length;i++){
+    // timeline.to(meshObject.position.array, 2, { 0: targets[i], ease: Expo.easeOut });
+  // }
+  // timeline.to(meshObject.position.array, 1, { 0: targets[0], ease: Expo.easeOut });
+  mesh.geometry.attributes.position.needsUpdate = true; // required after the first render
 };
 animate();
